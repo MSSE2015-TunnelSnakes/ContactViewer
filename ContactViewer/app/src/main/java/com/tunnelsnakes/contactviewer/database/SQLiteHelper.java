@@ -12,22 +12,28 @@ import java.util.ArrayList;
 
 import com.tunnelsnakes.contactviewer.models.Contact;
 
+// TODO - Should this class be a singleton?
 public class SQLiteHelper extends SQLiteOpenHelper {
     private static final String TAG = "SQLiteOpenHelper";
     private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "ContactViewer.db";
+    private static final String CONTACTS_TABLE_NAME = "Contacts";
 
     // Database creation sql statement
-    private static final String DATABASE_CREATE_CONTACTS = "CREATE TABLE Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, firstName TEXT, lastName TEXT, title TEXT, phone TEXT, email TEXT, twitterHandle TEXT)";
-    private static final String[] contactTableColumns = new String[] {"id", "firstName", "lastName", "title", "phone", "email", "twitterHandle"};
+    private static final String DATABASE_CREATE_CONTACTS = "CREATE TABLE " + CONTACTS_TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, firstName TEXT, lastName TEXT, title TEXT, phone TEXT, email TEXT, twitterHandle TEXT)";
+    private static final String[] CONTACT_TABLE_COLUMNS = new String[] {"id", "firstName", "lastName", "title", "phone", "email", "twitterHandle"};
 
-    public SQLiteHelper(Context context, String databaseName) {
-        super(context, databaseName, null, DATABASE_VERSION);
+    public SQLiteHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-     //   SQLiteDatabase db = this.getReadableDatabase();
-        database.execSQL(DATABASE_CREATE_CONTACTS);
+        try {
+            database.execSQL(DATABASE_CREATE_CONTACTS);
+        } catch (SQLiteException se) {
+            Log.e(TAG, "Error attempting to create database: " + se.getLocalizedMessage());
+        }
     }
 
     @Override
@@ -43,7 +49,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
 
             try {
-                Cursor cursor = db.query("ContactsActivity", contactTableColumns, null, null, null, null, "lastName");
+                Cursor cursor = db.query(CONTACTS_TABLE_NAME, CONTACT_TABLE_COLUMNS, null, null, null, null, "lastName");
                 Log.v(TAG, "getContacts found " + cursor.getCount() + " records");
 
                 if (cursor != null) {
@@ -86,11 +92,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         contactValues.put("firstName", contact.getFirstName());
         contactValues.put("lastName", contact.getLastName());
         contactValues.put("title", contact.getTitle());
+        contactValues.put("email", contact.getEmail());
         contactValues.put("phone", contact.getPhone());
         contactValues.put("twitterHandle", contact.getTwitterHandle());
 
         try {
-            db.insertWithOnConflict("ContactsActivity", null, contactValues, SQLiteDatabase.CONFLICT_IGNORE);
+            db.insertWithOnConflict(CONTACTS_TABLE_NAME, null, contactValues, SQLiteDatabase.CONFLICT_IGNORE);
         } catch (SQLiteException se) {
             Log.e(TAG, "SQLiteException: " + se.getLocalizedMessage());
             return false;

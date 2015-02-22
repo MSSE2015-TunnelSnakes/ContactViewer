@@ -1,7 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Contact Viewer</string>
 
+    <string name="app_name">Contact Viewer</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_add_edit_contact">AddEditContactActivity</string>
+    <string name="title_activity_contacts_list">ContactsListActivity</string>
+
 </resources>
