@@ -62,6 +62,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                             contact.setLastName(cursor.getString(cursor.getColumnIndex("lastName")));
                             contact.setTitle(cursor.getString(cursor.getColumnIndex("title")));
                             contact.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
+                            contact.setEmail(cursor.getString(cursor.getColumnIndex("email")));
                             contact.setTwitterHandle(cursor.getString(cursor.getColumnIndex("twitterHandle")));
                             results.add(contact);
                             // move to next row
@@ -85,9 +86,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public boolean addUpdateContact(Contact contact) {
         SQLiteDatabase db = this.getReadableDatabase();
         ContentValues contactValues = new ContentValues();
-        if(contact.getId() >= 0) {
-            contactValues.put("id", contact.getId());
-        }
 
         contactValues.put("firstName", contact.getFirstName());
         contactValues.put("lastName", contact.getLastName());
@@ -97,7 +95,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         contactValues.put("twitterHandle", contact.getTwitterHandle());
 
         try {
-            db.insertWithOnConflict(CONTACTS_TABLE_NAME, null, contactValues, SQLiteDatabase.CONFLICT_IGNORE);
+            if(contact.getId() >= 0) {
+                db.update(CONTACTS_TABLE_NAME, contactValues, "id = " + contact.getId(), null);
+            } else {
+                db.insert(CONTACTS_TABLE_NAME, null, contactValues);
+            }
         } catch (SQLiteException se) {
             Log.e(TAG, "SQLiteException: " + se.getLocalizedMessage());
             return false;
@@ -106,6 +108,30 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 db.close();
             }
             return true;
+        }
+    }
+
+    // NOTE: This could be done better.  This works for now.
+    public Contact getContact(int id) {
+        ArrayList<Contact> contacts = getContacts();
+        for(Contact c : contacts) {
+            if(c.getId() == id) {
+                return c;
+            }
+        }
+        return null; // This is bad
+    }
+
+    public void deleteContact(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            db.delete(CONTACTS_TABLE_NAME, "id = " + id, null);
+        } catch (SQLiteException se) {
+            Log.d(TAG, "Could not delete contact: " + se.getLocalizedMessage());
+        } finally {
+            if (db != null) {
+                db.close();
+            }
         }
     }
 }
