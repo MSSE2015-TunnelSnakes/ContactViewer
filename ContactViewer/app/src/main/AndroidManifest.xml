@@ -8,13 +8,17 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".Contacts"
+            android:name="com.tunnelsnakes.contactviewer.ContactsActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tunnelsnakes.contactviewer.AddEditContactActivity"
+            android:label="@string/title_activity_add_edit_contact" >
         </activity>
     </application>
 

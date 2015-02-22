@@ -1,4 +1,4 @@
-package tunnlesnakes.com.contactviewer;
+package com.tunnelsnakes.contactviewer;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

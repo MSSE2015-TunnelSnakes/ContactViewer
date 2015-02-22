@@ -1,4 +1,4 @@
-package tunnlesnakes.com.contactviewer;
+package com.tunnelsnakes.contactviewer.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import tunnlesnakes.com.contactviewer.models.Contact;
+import tunnlesnakes.com.contactviewer.R;
+
+import com.tunnelsnakes.contactviewer.models.Contact;
 
 
 public class ContactArrayAdapter extends ArrayAdapter<Contact> {

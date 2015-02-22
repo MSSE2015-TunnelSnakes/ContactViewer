@@ -1,4 +1,4 @@
-package tunnlesnakes.com.contactviewer;
+package com.tunnelsnakes.contactviewer;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,15 +10,15 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import tunnlesnakes.com.contactviewer.database.SQLiteHelper;
-import tunnlesnakes.com.contactviewer.models.Contact;
+import tunnlesnakes.com.contactviewer.R;
+
+import com.tunnelsnakes.contactviewer.database.SQLiteHelper;
+import com.tunnelsnakes.contactviewer.models.Contact;
 
 
-public class Contacts extends ActionBarActivity {
+public class ContactsActivity extends ActionBarActivity {
 
     private static final String DB_NAME = "Contacts.db";
-
-    private TextView contactsTextView;
     private ListView contactsListView;
 
     @Override
@@ -26,7 +26,6 @@ public class Contacts extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        contactsTextView = (TextView) findViewById(R.id.contacts_text_view);
         contactsListView = (ListView) findViewById(R.id.contacts_list_view);
 
         SQLiteHelper sqlHelper = new SQLiteHelper(this, DB_NAME);
@@ -53,7 +52,8 @@ public class Contacts extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_add_new_contact) {
+
             return true;
         }
 

@@ -1,4 +1,4 @@
-package tunnlesnakes.com.contactviewer.models;
+package com.tunnelsnakes.contactviewer.models;
 
 
 public class Contact {

@@ -1,4 +1,4 @@
-package tunnlesnakes.com.contactviewer.database;
+package com.tunnelsnakes.contactviewer.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,14 +10,14 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import tunnlesnakes.com.contactviewer.models.Contact;
+import com.tunnelsnakes.contactviewer.models.Contact;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
     private static final String TAG = "SQLiteOpenHelper";
     private static final int DATABASE_VERSION = 1;
 
     // Database creation sql statement
-    private static final String DATABASE_CREATE_CONTACTS = "CREATE TABLE Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, TEXT firstName, TEXT lastName, TEXT title, TEXT phone, TEXT email, TEXT twitterHandle";
+    private static final String DATABASE_CREATE_CONTACTS = "CREATE TABLE Contacts (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, firstName TEXT, lastName TEXT, title TEXT, phone TEXT, email TEXT, twitterHandle TEXT)";
     private static final String[] contactTableColumns = new String[] {"id", "firstName", "lastName", "title", "phone", "email", "twitterHandle"};
 
     public SQLiteHelper(Context context, String databaseName) {
@@ -33,40 +33,44 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.w(TAG,"Upgrading database from version " + oldVersion + " to "+ newVersion + ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS Contacts");
+        db.execSQL("DROP TABLE IF EXISTS ContactsActivity");
         onCreate(db);
     }
 
     public ArrayList<Contact> getContacts() {
         ArrayList<Contact> results = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
         try {
-            Cursor cursor = db.query("Contacts", contactTableColumns, null, null, null, null, "lastName");
-            Log.v(TAG, "getContacts found " + cursor.getCount() + " records");
+            SQLiteDatabase db = this.getWritableDatabase();
 
-            if (cursor != null) {
-                // move cursor to first row
-                if (cursor.moveToFirst()) {
-                    do {
-                        Contact contact = new Contact();
-                        contact.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                        contact.setFirstName(cursor.getString(cursor.getColumnIndex("firstName")));
-                        contact.setLastName(cursor.getString(cursor.getColumnIndex("lastName")));
-                        contact.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-                        contact.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
-                        contact.setTwitterHandle(cursor.getString(cursor.getColumnIndex("twitterHandle")));
-                        results.add(contact);
-                        // move to next row
-                    } while (cursor.moveToNext());
+            try {
+                Cursor cursor = db.query("ContactsActivity", contactTableColumns, null, null, null, null, "lastName");
+                Log.v(TAG, "getContacts found " + cursor.getCount() + " records");
+
+                if (cursor != null) {
+                    // move cursor to first row
+                    if (cursor.moveToFirst()) {
+                        do {
+                            Contact contact = new Contact();
+                            contact.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                            contact.setFirstName(cursor.getString(cursor.getColumnIndex("firstName")));
+                            contact.setLastName(cursor.getString(cursor.getColumnIndex("lastName")));
+                            contact.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                            contact.setPhone(cursor.getString(cursor.getColumnIndex("phone")));
+                            contact.setTwitterHandle(cursor.getString(cursor.getColumnIndex("twitterHandle")));
+                            results.add(contact);
+                            // move to next row
+                        } while (cursor.moveToNext());
+                    }
+                }
+            } catch (SQLiteException se) {
+                Log.e(TAG, "SQLiteException: " + se.getLocalizedMessage());
+            } finally {
+                if (db != null) {
+                    db.close();
                 }
             }
-        } catch (SQLiteException se) {
-            Log.e(TAG, "SQLiteException: " + se.getLocalizedMessage());
-        } finally {
-            if (db != null) {
-                db.close();
-            }
+        } catch (Exception ex) {
+            Log.e(TAG, "Error getting writable database: " + ex.getLocalizedMessage());
         }
 
         return results;
@@ -86,7 +90,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         contactValues.put("twitterHandle", contact.getTwitterHandle());
 
         try {
-            db.insertWithOnConflict("Contacts", null, contactValues, SQLiteDatabase.CONFLICT_IGNORE);
+            db.insertWithOnConflict("ContactsActivity", null, contactValues, SQLiteDatabase.CONFLICT_IGNORE);
         } catch (SQLiteException se) {
             Log.e(TAG, "SQLiteException: " + se.getLocalizedMessage());
             return false;
