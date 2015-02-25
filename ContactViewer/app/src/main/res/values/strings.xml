@@ -2,9 +2,8 @@
 <resources>
 
     <string name="app_name">Contact Viewer</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_add_edit_contact">AddEditContactActivity</string>
-    <string name="title_activity_contacts_list">ContactsListActivity</string>
+    <string name="title_activity_add_edit_contact">Add/Edit Contact</string>
+    <string name="title_activity_contacts_list">Contacts</string>
+    <string name="add_contact_button_text">Add Contact</string>
 
 </resources>
